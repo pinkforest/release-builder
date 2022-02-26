@@ -10,7 +10,7 @@ on:
 
 jobs:
   build_containers:
-    name: Build image ${{ input.name }} for ${{ matrix.rust-target }}
+    name: Build image ${{ inputs.name }} for ${{ matrix.rust-target }}
     needs: [check, build_connector_bins]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -47,7 +47,7 @@ jobs:
       - name: Download artifact - ${{ inputname }} - ${{ matrix.rust-target }}
         uses: actions/download-artifact@v2
         with:
-          name: ${{ input.name }}-${{ matrix.rust-target }}
+          name: ${{ inputs.name }}-${{ matrix.rust-target }}
           # This is the directory the Makefile expects artifacts to live in
           path: container-build
 
@@ -62,7 +62,7 @@ jobs:
         if: matrix.connector-name != 'test-connector'
         env:
           TARGET: ${{ matrix.rust-target }}
-          CONNECTOR_NAME: ${{ input.name }}
+          CONNECTOR_NAME: ${{ inputs.name }}
           COMMIT_HASH: ${{ github.sha }}
           # IMAGE_NAME: ${{ matrix.image-name }}
         run: make official-containers
@@ -71,7 +71,7 @@ jobs:
         if: matrix.connector-name == 'test-connector'
         env:
           TARGET: ${{ matrix.rust-target }}
-          CONNECTOR_NAME: ${{ input.name }}
+          CONNECTOR_NAME: ${{ inputs.name }}
           COMMIT_HASH: ${{ github.sha }}
           DOCKERFILE_PATH: ./container-build/dockerfiles/test-connector/Dockerfile
           # IMAGE_NAME: ${{ matrix.image-name }}
@@ -79,6 +79,6 @@ jobs:
       - name: Upload tarball as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: infinyon-fluvio-connector-${{ matrix.connector-name }}-${{ matrix.rust-target }}.tar
+          name: infinyon-fluvio-connector-${{ inputs.name }}-${{ matrix.rust-target }}.tar
           path: /tmp/infinyon-fluvio-connector-${{ matrix.connector-name }}-${{ matrix.rust-target }}.tar
           retention-days: 1
