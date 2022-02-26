@@ -19,7 +19,6 @@ on:
 
 jobs:
   rust-builder:
-    using: "composite"
     name:  Build binary ${{ inputs.name }} for ${{ matrix.rust-target }} on (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
