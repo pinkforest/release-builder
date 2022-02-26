@@ -11,7 +11,6 @@ on:
 jobs:
   build_containers:
     name: Build image ${{ inputs.name }} for ${{ matrix.rust-target }}
-    needs: [check, build_connector_bins]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
