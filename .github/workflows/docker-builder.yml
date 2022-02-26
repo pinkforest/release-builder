@@ -44,7 +44,7 @@ jobs:
           echo "Flags:     ${{ steps.buildx.outputs.flags }}"
           echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
       # Download artifacts from build
-      - name: Download artifact - ${{ inputname }} - ${{ matrix.rust-target }}
+      - name: Download artifact - ${{ inputs.name }} - ${{ matrix.rust-target }}
         uses: actions/download-artifact@v2
         with:
           name: ${{ inputs.name }}-${{ matrix.rust-target }}
@@ -54,12 +54,12 @@ jobs:
       - name: Print container-build dir
         run: |
           ls container-build;
-          chmod +x ./container-build/${{ matrix.connector-name }}
-          ./container-build/${{ matrix.connector-name }} -h || true
+          chmod +x ./container-build/${{ inputs.name }}
+          ./container-build/${{ inputs.name }} -h || true
       # The build script will export the resulting image to
-      # /tmp/infinyon-fluvio-connector-${{ matrix.connector-name }}-${{ matrix.rust-target }}.tar
+      # /tmp/infinyon-fluvio-connector-${{ inputs.name }}-${{ matrix.rust-target }}.tar
       - name: Build containers
-        if: matrix.connector-name != 'test-connector'
+        if: inputs.name != 'test-connector'
         env:
           TARGET: ${{ matrix.rust-target }}
           CONNECTOR_NAME: ${{ inputs.name }}
@@ -68,7 +68,7 @@ jobs:
         run: make official-containers
 
       - name: Build Test-connector
-        if: matrix.connector-name == 'test-connector'
+        if: inputs.name == 'test-connector'
         env:
           TARGET: ${{ matrix.rust-target }}
           CONNECTOR_NAME: ${{ inputs.name }}
@@ -80,5 +80,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: infinyon-fluvio-connector-${{ inputs.name }}-${{ matrix.rust-target }}.tar
-          path: /tmp/infinyon-fluvio-connector-${{ matrix.connector-name }}-${{ matrix.rust-target }}.tar
+          path: /tmp/infinyon-fluvio-connector-${{ inputs.name }}-${{ matrix.rust-target }}.tar
           retention-days: 1
