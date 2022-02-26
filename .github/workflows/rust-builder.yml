@@ -11,11 +11,11 @@ on:
         description: 'Unique Serial Identifier'
         required: true
         type: string
-    outputs:
-      artefacts_url:
-        description: 'Built Artefacts'
-        value: ${{ steps.bundle_builder.outputs.artefacts_url }}
-        type: string
+#    outputs:
+#      artefacts_url:
+#        description: 'Built Artefacts'
+#        value: ${{ steps.bundle_builder.outputs.artefacts_url }}
+#        type: string
 
 jobs:
   rust-builder:
